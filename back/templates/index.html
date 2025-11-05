@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectTec - Sistema de Orçamentos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Initial Options Screen -->
+        <div class="initial-screen" id="initialScreen">
+            <div class="content-card">
+                <div class="header">
+                    <div class="logo">
+                        <i class="fas fa-cube"></i>
+                        <span>ProjectTec</span>
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://picsum.photos/seed/user123/40/40.jpg" alt="User" class="user-avatar">
+                        <span class="user-name">Rafael</span>
+                    </div>
+                </div>
+                
+                <div class="main-content">
+                    <h1>Olá, Qual projeto você deseja executar?</h1>
+                    
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="projectInput" 
+                            placeholder="Preciso de um orçamento para um projeto que..."
+                            class="project-input"
+                        >
+                        <button class="voice-btn" id="initialVoiceBtn" title="Gravar áudio">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="options-grid">
+                        <button class="option-card" data-type="single" data-input="text">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Orçamento Único</span>
+                        </button>
+                        <button class="option-card" data-type="multiple" data-input="text">
+                            <i class="fas fa-list-alt"></i>
+                            <span>Múltiplos Itens</span>
+                        </button>
+                        <button class="option-card" data-type="single" data-input="voice">
+                            <i class="fas fa-microphone-alt"></i>
+                            <span>Orçamento por Voz</span>
+                        </button>
+                        <button class="option-card" data-type="multiple" data-input="voice">
+                            <i class="fas fa-microphone-lines"></i>
+                            <span>Múltiplos por Voz</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Screen -->
+        <div class="chat-screen" id="chatScreen" style="display: none;">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="header-left">
+                        <button class="back-btn" id="backBtn">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="logo">
+                            <i class="fas fa-cube"></i>
+                            <span>ProjectTec</span>
+                        </div>
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://picsum.photos/seed/user123/40/40.jpg" alt="User" class="user-avatar">
+                        <span class="user-name">Rafael</span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <div class="bot-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <p id="welcomeText">Olá! Sou o assistente de orçamentos. Como posso ajudar você hoje?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product List for Multiple Mode -->
+                <div class="product-list" id="productList" style="display: none;">
+                    <div class="list-header">
+                        <h3>Itens do Orçamento</h3>
+                        <button class="clear-list-btn" id="clearListBtn">
+                            <i class="fas fa-trash"></i>
+                            Limpar
+                        </button>
+                    </div>
+                    <div class="list-content" id="listContent">
+                        <p class="empty-list">Nenhum item adicionado ainda</p>
+                    </div>
+                    <button class="generate-quote-btn" id="generateQuoteBtn">
+                        <i class="fas fa-calculator"></i>
+                        Gerar Orçamento
+                    </button>
+                </div>
+
+                <!-- PDF Download Area -->
+                <div class="pdf-area" id="pdfArea" style="display: none;">
+                    <div class="pdf-content">
+                        <i class="fas fa-file-pdf"></i>
+                        <div class="pdf-info">
+                            <h3>Orçamento Gerado</h3>
+                            <p>Seu orçamento está pronto para download</p>
+                        </div>
+                        <button class="download-btn" id="downloadBtn">
+                            <i class="fas fa-download"></i>
+                            Baixar PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chat-input">
+                    <div class="input-container">
+                        <button class="voice-btn" id="voiceBtn" title="Clique para falar">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <input 
+                            type="text" 
+                            id="messageInput" 
+                            placeholder="Digite sua mensagem aqui..."
+                            autocomplete="off"
+                        >
+                        <button class="send-btn" id="sendBtn" title="Enviar mensagem">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Recording Modal -->
+    <div class="voice-modal" id="voiceModal" style="display: none;">
+        <div class="voice-content">
+            <div class="voice-animation">
+                <div class="voice-circle"></div>
+                <i class="fas fa-microphone"></i>
+            </div>
+            <p id="voiceText">Ouvindo...</p>
+            <button class="stop-voice-btn" id="stopVoiceBtn">
+                <i class="fas fa-stop"></i>
+                Parar
+            </button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
